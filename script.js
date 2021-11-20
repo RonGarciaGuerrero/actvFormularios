@@ -152,31 +152,35 @@ function validarHora(evento){
 }
 
 function validarEnviar(evento){
-    evento.preventDefault();
+    
     var x = evento.currentTarget;
     //alert("jeje");
-    var a = document.forms["formulario"]["nombre"].value;
-    var b = document.forms["formulario"]["apellidos"].value;
-    var c = document.forms["formulario"]["edad"].value;
-    var d = document.forms["formulario"]["nif"].value;
-    var e = document.forms["formulario"]["email"].value;
-    var f = document.forms["formulario"]["provincia"].value;
-    var g = document.forms["formulario"]["fecha"].value;
-    var h = document.forms["formulario"]["telefono"].value;
-    var i = document.forms["formulario"]["hora"].value;
+    var a = x["nombre"].value;
+    var b = x["apellidos"].value;
+    var c = x["edad"].value;
+    var d = x["nif"].value;
+    var e = x["email"].value;
+    var f = x["provincia"].value;
+    var g = x["fecha"].value;
+    var h = x["telefono"].value;
+    var i = x["hora"].value;
     if (a == null || a == "", b == null || b == "", c == null || c == "", d == null || d == ""|| e == null || e == "", f == null || f == "", g == null || g == "", h == null || h == "", i == null || i == "") {
         alert("No puede dejar ningún campo vacío, rellene el formulario");
-        return false;
-    }else{
-        document.getElementById("intentos").innerHTML="<p>Confirmación de envío de datos:</p><br/><button type=\"button\" onclick=\"alert('Datos enviados')\">Aceptar</button>&nbsp<button type=\"button\" onclick=\"alert('Envío cancelado')\">Cancelar</button>";
-    }
-
-
+        evento.preventDefault();//esto evita que se ejecute el manejador por defecto del evento
     
-
+    }else{
+       //en este cumpo todos los campos estan rellenos pero no necesariamente válidos
+       if(document.getElementById("errores").innerHTML!=""){//hay errores
+            alert("Hay errores en el formulario");
+            evento.preventDefault();//no se envía
+       }else{
+            var confirmacion = confirm('¿Está seguro que desea enviar el formulario?');
+            if (!confirmacion){
+                evento.preventDefault();
+            }
+       }
+    }
 }
-
-
 
 function asociarListeners(loadEvent){//dentro de esta funcion hay que meter todo el codigo que debe esperar a que se cargue la ventana entera para ejecutarse
     //alert('hola');
@@ -193,28 +197,10 @@ function asociarListeners(loadEvent){//dentro de esta funcion hay que meter todo
     document.getElementById("hora").addEventListener('blur',validarHora,false);
     document.getElementById("formulario").addEventListener('submit',validarEnviar,false);
 
-    // const form = document.getElementById('form');
-    // const error = document.getElementById('errores');
-    // const nomb = document.getElementById("nombre");
-    // nomb.oninvalid = invalid;
-    // form.onsubmit = submit;
-
 }
-
 
 //como el script esta metido en el head se ejecuta antes de cargar todo el documento html por lo que no consigue el elemento cuyo id es nombre, por eso en la consola daba el error de acceder a la propiedad addEventListener de null
 
 //la solucion a esto es ejecutar este codigo en el evento load del window
 //cuando LA VENTANA  (window) se haya terminado de cargar correctamente entonces se ejecutará la funcion asociar listeners
 window.addEventListener('load',asociarListeners,false);
-window.addEventListener('submit',asociarListeners,false);
-
-
-
-//sin el addEventListener
-// document.getElementById("nombre").onblur = mayusculas;
-
-// function mayusculas(){
-//     var x = document.getElementById("nombre");
-//     x.value = x.value.toUpperCase();
-// }
